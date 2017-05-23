@@ -9,46 +9,49 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 public class MainActivity extends AppCompatActivity {
-    LinearLayout ll;
-    ImageButton fullscreenbtn;
+    private LinearLayout mLinearLayout;
+    private ImageButton mFullscreenButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-         fullscreenbtn=(ImageButton) findViewById(R.id.expandbtn);
-        ll=(LinearLayout)findViewById(R.id.main_linear_layout);
-
-
-    }
-    @Override
-    public void onStart(){
-        super.onStart();
-        fullscreenbtn.setOnClickListener(View -> marginChange());
+        
+        //bind variables to layout elements
+        bindLayoutElements();
+        //set liseteners
+        mFullscreenButton.setOnClickListener(View -> marginChange());
+        //other init tasks
         slideanim();
         gestures();
 
 
     }
+    private void bindLayoutElements(){
+        mFullscreenButton=(ImageButton) findViewById(R.id.expandbtn);
+        mLinearLayout=(LinearLayout)findViewById(R.id.main_linear_layout);
 
-    public void marginChange(){
+    }
+   
+
+    private void marginChange(){
         //margin change from 180dp to zero
 
-        /*ViewGroup.MarginLayoutParams params=(ViewGroup.MarginLayoutParams)ll.getLayoutParams();
+        /*ViewGroup.MarginLayoutParams params=(ViewGroup.MarginLayoutParams)mLinearLayout.getLayoutParams();
         params.topMargin=0;
-        ll.setLayoutParams(params);*/
-        fullscreenbtn.setVisibility(View.GONE);
+        mLinearLayout.setLayoutParams(params);*/
+        mFullscreenButton.setVisibility(View.GONE);
 
     }
     public void slideanim(){
         //layout upward animation
         Animation slideanim= AnimationUtils.loadAnimation(getApplicationContext(),R.anim.slide);
-        ll.startAnimation(slideanim);
+        mLinearLayout.startAnimation(slideanim);
         //button animation
         Animation fadeanim=AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade);
-        fullscreenbtn.startAnimation(fadeanim);
+        mFullscreenButton.startAnimation(fadeanim);
     }
     public void gestures(){
-        ll.setOnTouchListener(new OnSwipeTouchListener(MainActivity.this){
+        mLinearLayout.setOnTouchListener(new OnSwipeTouchListener(MainActivity.this){
             @Override
             public void onClick(){
                 super.onClick();
