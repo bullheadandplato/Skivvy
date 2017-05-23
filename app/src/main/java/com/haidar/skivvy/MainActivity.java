@@ -1,22 +1,35 @@
 package com.haidar.skivvy;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 
 public class MainActivity extends AppCompatActivity {
-    LinearLayout ll;
+    CoordinatorLayout coordinatorLayout;
     ImageButton fullscreenbtn;
+    ImageButton keyboardbtn;
+    ImageButton micbtn;
+    ImageButton small_micbtn;
+    EditText entrytxt;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
          fullscreenbtn=(ImageButton) findViewById(R.id.expandbtn);
-        ll=(LinearLayout)findViewById(R.id.main_linear_layout);
+        keyboardbtn=(ImageButton)findViewById(R.id.keyboardButton);
+        micbtn=(ImageButton)findViewById(R.id.micButton);
+        small_micbtn=(ImageButton)findViewById(R.id.small_mic) ;
+        entrytxt=(EditText)findViewById(R.id.textentry);
+        coordinatorLayout=(CoordinatorLayout) findViewById(R.id.coordinator_layout);
 
 
     }
@@ -24,6 +37,9 @@ public class MainActivity extends AppCompatActivity {
     public void onStart(){
         super.onStart();
         fullscreenbtn.setOnClickListener(View -> marginChange());
+        keyboardbtn.setOnClickListener(View ->setKeyboardbtn());
+        small_micbtn.setOnClickListener(View -> setSmall_micbtn());
+
         slideanim();
         gestures();
 
@@ -42,13 +58,13 @@ public class MainActivity extends AppCompatActivity {
     public void slideanim(){
         //layout upward animation
         Animation slideanim= AnimationUtils.loadAnimation(getApplicationContext(),R.anim.slide);
-        ll.startAnimation(slideanim);
+        coordinatorLayout.startAnimation(slideanim);
         //button animation
         Animation fadeanim=AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade);
         fullscreenbtn.startAnimation(fadeanim);
     }
     public void gestures(){
-        ll.setOnTouchListener(new OnSwipeTouchListener(MainActivity.this){
+        coordinatorLayout.setOnTouchListener(new OnSwipeTouchListener(MainActivity.this){
             @Override
             public void onClick(){
                 super.onClick();
@@ -92,5 +108,26 @@ public class MainActivity extends AppCompatActivity {
                 // your swipe right here.
             }
         });
+    }
+    public void setKeyboardbtn(){
+        micbtn.setVisibility(View.GONE);
+        keyboardbtn.setVisibility(View.GONE);
+        entrytxt.setVisibility(View.VISIBLE);
+        small_micbtn.setVisibility(View.VISIBLE);
+        entrytxt.requestFocus();
+        final Handler handler = new Handler();
+        handler.postDelayed(() -> {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(entrytxt, InputMethodManager.SHOW_IMPLICIT);
+        }, 500);
+
+        marginChange();
+
+    }
+    public void setSmall_micbtn(){
+        keyboardbtn.setVisibility(View.VISIBLE);
+        entrytxt.setVisibility(View.GONE);
+      micbtn.setVisibility(View.VISIBLE);
+        small_micbtn.setVisibility(View.GONE);
     }
 }
