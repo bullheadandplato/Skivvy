@@ -13,38 +13,41 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 public class MainActivity extends AppCompatActivity {
-    CoordinatorLayout coordinatorLayout;
-    ImageButton fullscreenbtn;
-    ImageButton keyboardbtn;
-    ImageButton micbtn;
-    ImageButton small_micbtn;
-    EditText entrytxt;
+    private CoordinatorLayout   mCoordinatorLayout;
+    private ImageButton         mFullscreenButton;
+    private ImageButton         mKeyboardButton;
+    private ImageButton         mMicButton;
+    private ImageButton         mSmallMicButton;
+    private EditText            mEntryText;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-         fullscreenbtn=(ImageButton) findViewById(R.id.expandbtn);
-        keyboardbtn=(ImageButton)findViewById(R.id.keyboardButton);
-        micbtn=(ImageButton)findViewById(R.id.micButton);
-        small_micbtn=(ImageButton)findViewById(R.id.small_mic) ;
-        entrytxt=(EditText)findViewById(R.id.textentry);
-        coordinatorLayout=(CoordinatorLayout) findViewById(R.id.coordinator_layout);
-
-
-    }
-    @Override
-    public void onStart(){
-        super.onStart();
-        fullscreenbtn.setOnClickListener(View -> marginChange());
-        keyboardbtn.setOnClickListener(View ->setKeyboardbtn());
-        small_micbtn.setOnClickListener(View -> setSmall_micbtn());
-
+        bindLayoutElements();
+        setListeners();
         slideanim();
         gestures();
 
+    }
+
+    private void setListeners() {
+        mFullscreenButton.setOnClickListener(View -> marginChange());
+        mKeyboardButton.setOnClickListener(View ->setKeyboardbtn());
+        mSmallMicButton.setOnClickListener(View -> setSmallMicbtn());
 
     }
+
+    private void bindLayoutElements(){
+        mFullscreenButton   = (ImageButton) findViewById(R.id.expandbtn);
+        mKeyboardButton     = (ImageButton)findViewById(R.id.keyboardButton);
+        mMicButton          = (ImageButton)findViewById(R.id.micButton);
+        mSmallMicButton     = (ImageButton)findViewById(R.id.small_mic) ;
+        mEntryText          = (EditText)findViewById(R.id.textentry);
+        mCoordinatorLayout  = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
+
+    }
+
 
     public void marginChange(){
         //margin change from 180dp to zero
@@ -52,19 +55,19 @@ public class MainActivity extends AppCompatActivity {
         /*ViewGroup.MarginLayoutParams params=(ViewGroup.MarginLayoutParams)ll.getLayoutParams();
         params.topMargin=0;
         ll.setLayoutParams(params);*/
-        fullscreenbtn.setVisibility(View.GONE);
+        mFullscreenButton.setVisibility(View.GONE);
 
     }
-    public void slideanim(){
+    private void slideanim(){
         //layout upward animation
         Animation slideanim= AnimationUtils.loadAnimation(getApplicationContext(),R.anim.slide);
-        coordinatorLayout.startAnimation(slideanim);
+        mCoordinatorLayout.startAnimation(slideanim);
         //button animation
         Animation fadeanim=AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade);
-        fullscreenbtn.startAnimation(fadeanim);
+        mFullscreenButton.startAnimation(fadeanim);
     }
-    public void gestures(){
-        coordinatorLayout.setOnTouchListener(new OnSwipeTouchListener(MainActivity.this){
+    private void gestures(){
+        mCoordinatorLayout.setOnTouchListener(new OnSwipeTouchListener(MainActivity.this){
             @Override
             public void onClick(){
                 super.onClick();
@@ -109,25 +112,26 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    public void setKeyboardbtn(){
-        micbtn.setVisibility(View.GONE);
-        keyboardbtn.setVisibility(View.GONE);
-        entrytxt.setVisibility(View.VISIBLE);
-        small_micbtn.setVisibility(View.VISIBLE);
-        entrytxt.requestFocus();
+    private void setKeyboardbtn(){
+        mMicButton.setVisibility(View.GONE);
+        mKeyboardButton.setVisibility(View.GONE);
+        mEntryText.setVisibility(View.VISIBLE);
+        mSmallMicButton.setVisibility(View.VISIBLE);
+        mEntryText.requestFocus();
         final Handler handler = new Handler();
         handler.postDelayed(() -> {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.showSoftInput(entrytxt, InputMethodManager.SHOW_IMPLICIT);
+            imm.showSoftInput(mEntryText, InputMethodManager.SHOW_IMPLICIT);
         }, 500);
 
         marginChange();
 
     }
-    public void setSmall_micbtn(){
-        keyboardbtn.setVisibility(View.VISIBLE);
-        entrytxt.setVisibility(View.GONE);
-      micbtn.setVisibility(View.VISIBLE);
-        small_micbtn.setVisibility(View.GONE);
+
+    private void setSmallMicbtn(){
+        mKeyboardButton.setVisibility(View.VISIBLE);
+        mEntryText.setVisibility(View.GONE);
+        mMicButton.setVisibility(View.VISIBLE);
+        mSmallMicButton.setVisibility(View.GONE);
     }
 }
